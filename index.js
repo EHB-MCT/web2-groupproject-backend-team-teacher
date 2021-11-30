@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 //Create the mongo client to use
@@ -45,7 +45,7 @@ app.get('/challenges', async (req, res) =>{
     
 });
 
-// /challenges/:id
+// DONE - challenges/:id
 app.get('/challenges/:id', async (req,res) => {
     //id is located in the query: req.params.id
     try{
@@ -56,7 +56,7 @@ app.get('/challenges/:id', async (req,res) => {
         const colli = client.db('groupproject').collection('challenges');
 
          //only look for a challenge with this ID
-        const query = { _id: req.params.id };
+        const query = { _id: ObjectId(req.params.id) };
 
         const challenge = await colli.findOne(query);
 
