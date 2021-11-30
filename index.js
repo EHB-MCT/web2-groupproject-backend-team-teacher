@@ -7,7 +7,8 @@ require('dotenv').config();
 const client = new MongoClient(process.env.MONGO_URL);
 
 const app = express();
-const port = 1337;
+//Let heroku do its thing with the port
+const port = process.env.PORT || 1337;
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
