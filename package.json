@@ -1,0 +1,26 @@
+{
+  "name": "web2-groupproject-backend-team-teacher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EHB-MCT/web2-groupproject-backend-team-teacher.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EHB-MCT/web2-groupproject-backend-team-teacher/issues"
+  },
+  "homepage": "https://github.com/EHB-MCT/web2-groupproject-backend-team-teacher#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  }
+}
