@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     res.status(300).redirect('/info.html');
 });
 
-// Return all challenges from the database
+// DONE - Return all challenges from the database
 app.get('/challenges', async (req, res) =>{
 
     try{
@@ -47,36 +47,36 @@ app.get('/challenges', async (req, res) =>{
 
 // /challenges/:id
 app.get('/challenges/:id', async (req,res) => {
-    //id is located in the query: req.query.id
-    // try{
-    //     //connect to the db
-    //     await client.connect();
+    //id is located in the query: req.params.id
+    try{
+         //connect to the db
+        await client.connect();
 
-    //     //retrieve the boardgame collection data
-    //     const colli = client.db('session5').collection('boardgames');
+         //retrieve the boardgame collection data
+        const colli = client.db('groupproject').collection('challenges');
 
-    //     //only look for a bg with this ID
-    //     const query = { bggid: req.query.id };
+         //only look for a challenge with this ID
+        const query = { _id: req.params.id };
 
-    //     const bg = await colli.findOne(query);
+        const challenge = await colli.findOne(query);
 
-    //     if(bg){
-    //         //Send back the file
-            res.status(200).send('ID OK: ' + req.params.id);
-    //         return;
-    //     }else{
-    //         res.status(400).send('Boardgame could not be found with id: ' + req.query.id);
-    //     }
+        if(challenge){
+             //Send back the file
+            res.status(200).send(challenge);
+            return;
+        }else{
+            res.status(400).send('Challenge could not be found with id: ' + req.params.id);
+        }
       
-    // }catch(error){
-    //     console.log(error);
-    //     res.status(500).send({
-    //         error: 'Something went wrong',
-    //         value: error
-    //     });
-    // }finally {
-    //     await client.close();
-    // }
+    }catch(error){
+        console.log(error);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        });
+    }finally {
+        await client.close();
+    }
 });
 
 // save a challenge
