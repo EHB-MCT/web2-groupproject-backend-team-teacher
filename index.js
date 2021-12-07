@@ -82,7 +82,7 @@ app.get('/challenges/:id', async (req,res) => {
     }
 });
 
-// save a challenge
+//DONE - save a challenge
 app.post('/challenges', async (req, res) => {
 
     if(!req.body.name || !req.body.course || !req.body.points){
@@ -131,9 +131,67 @@ app.post('/challenges', async (req, res) => {
     }
 });
 
-//update a challenge
+//DONE - update a challenge
 app.put('/challenges/:id', async (req,res) => {
-    res.send('UPDATE OK');
+    //Check for body data
+    if(!req.body.name || !req.body.course || !req.body.points){
+        res.status(400).send({
+            error: 'Bad Request',
+            value: 'Missing name, course or points property'
+        });
+        return;
+    }
+    // Check for id in url
+    if(!req.params.id){
+        res.status(400).send({
+            error: 'Bad Request',
+            value: 'Missing id in url'
+        });
+        return;
+    }
+
+    try{
+         //connect to the db
+        await client.connect();
+
+         //retrieve the challenges collection data
+        const colli = client.db('groupproject').collection('challenges');
+
+         // Validation for existing challenge
+        const bg = await colli.findOne({_id: ObjectId(req.params.id)});
+        if(!bg){
+            res.status(400).send({
+                error: 'Bad Request',
+                value: `Challenge does not exist with id ${req.params.id}`
+            });
+            return;
+        } 
+         // Create the new Challenge object
+        let newChallenge = {
+            name: req.body.name,
+            course: req.body.course,
+            points: req.body.points,
+        }
+        // Add the optional session field
+        if(req.body.session){
+            newChallenge.session = req.body.session;
+        }
+        
+         // Insert into the database
+        let updateResult = await colli.updateOne(newChallenge);
+
+         //Send back successmessage
+        res.status(201).json(updateResult);
+        return;
+    }catch(error){
+        console.log(error);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        });
+    }finally {
+        await client.close();
+    }
 });
 
 //delete a challenge
