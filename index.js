@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const { MongoClient, ObjectId } = require('mongodb');
 require('dotenv').config();
 const cors = require('cors');
+//encryption passwords
+const bcrypt = require('bcryptjs');
 
 //Create the mongo client to use
 const client = new MongoClient(process.env.MONGO_URL);
@@ -239,11 +241,13 @@ app.post('/users', async (req, res) => {
          //retrieve the challenges collection data
         const colli = client.db('groupproject').collection('users');
 
+        let salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(req.body.password, salt);
         
          // Create the new Challenge object
         let user = {
             username: req.body.username,
-            password: req.body.password
+            password: hash
         }
         
          // Insert into the database
