@@ -178,7 +178,8 @@ app.put('/challenges/:id', async (req,res) => {
         }
         
          // Insert into the database
-        let updateResult = await colli.updateOne(newChallenge);
+        let updateResult = await colli.updateOne({_id: ObjectId(req.params.id)}, 
+        {$set: newChallenge});;
 
          //Send back successmessage
         res.status(201).json(updateResult);
