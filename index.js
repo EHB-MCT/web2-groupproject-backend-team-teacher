@@ -50,9 +50,9 @@ app.get('/challenges', async (req, res) =>{
 
 // DONE - challenges/:id
 app.get('/challenges/:id', async (req,res) => {
-    //id is located in the query: req.params.id
+    //id is located in the params: req.params.id
     try{
-         //connect to the db
+         //connect to the db    
         await client.connect();
 
          //retrieve the boardgame collection data
@@ -60,7 +60,7 @@ app.get('/challenges/:id', async (req,res) => {
 
          //only look for a challenge with this ID
         const query = { _id: ObjectId(req.params.id) };
-
+        
         const challenge = await colli.findOne(query);
 
         if(challenge){
@@ -138,7 +138,36 @@ app.put('/challenges/:id', async (req,res) => {
 
 //delete a challenge
 app.delete('/challenges/:id', async (req,res) => {
-    res.send('DELETE OK');
+    
+    if(!req.params.id){
+        res.status(400).send({
+            error: 'Bad Request',
+            value: 'No id available in url'
+        });
+        return;
+    }
+
+    try{
+         //connect to the db
+        await client.connect();
+
+         //retrieve the challenges collection data
+        const colli = client.db('groupproject').collection('challenges');
+
+         // Validation for double challenges
+        let result = await colli.deleteOne({_id: ObjectId(req.params.id)});
+         //Send back successmessage
+        res.status(201).json(result);
+        return;
+    }catch(error){
+        console.log(error);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        });
+    }finally {
+        await client.close();
+    }
 });
 
 
