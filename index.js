@@ -179,7 +179,7 @@ app.put('/challenges/:id', async (req,res) => {
         
          // Insert into the database
         let updateResult = await colli.updateOne({_id: ObjectId(req.params.id)}, 
-        {$set: newChallenge});;
+        {$set: newChallenge});
 
          //Send back successmessage
         res.status(201).json(updateResult);
@@ -217,6 +217,40 @@ app.delete('/challenges/:id', async (req,res) => {
         let result = await colli.deleteOne({_id: ObjectId(req.params.id)});
          //Send back successmessage
         res.status(201).json(result);
+        return;
+    }catch(error){
+        console.log(error);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        });
+    }finally {
+        await client.close();
+    }
+});
+
+app.post('/users', async (req, res) => {
+
+
+    try{
+         //connect to the db
+        await client.connect();
+
+         //retrieve the challenges collection data
+        const colli = client.db('groupproject').collection('users');
+
+        
+         // Create the new Challenge object
+        let user = {
+            username: req.body.username,
+            password: req.body.password
+        }
+        
+         // Insert into the database
+        let insertResult = await colli.insertOne(user);
+
+         //Send back successmessage
+        res.status(201).json(insertResult);
         return;
     }catch(error){
         console.log(error);
